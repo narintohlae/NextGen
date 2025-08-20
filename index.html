@@ -22,6 +22,7 @@
             --success-color: #198754; /* Darker Green */
             --warning-color: #ffc107;
             --danger-color: #dc3545;
+            --info-color: #17a2b8;
             --border-color: #dee2e6;
             --shadow: 0 4px 12px rgba(0,0,0,0.08);
             --gap: 1.5rem;
@@ -92,6 +93,53 @@
             overflow: hidden;
             position: relative;
         }
+        
+        /* [MODIFIED] New top bar container */
+        #top-bar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.5rem var(--gap) 0;
+            flex-shrink: 0;
+        }
+
+        #bill-tabs-container {
+            flex-grow: 1;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+        }
+        
+        /* [MODIFIED] Live summary styles */
+        #live-summary-container {
+            flex-shrink: 0;
+            padding-left: 1rem;
+        }
+
+        #live-summary-container .summary-grid {
+            display: flex;
+            gap: 1rem;
+        }
+
+        #live-summary-container .summary-item {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            background-color: var(--bg-color);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        #live-summary-container .summary-item .label {
+            font-size: 0.7em;
+            color: var(--subtle-text);
+        }
+        #live-summary-container .summary-item .value {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
 
         .pos-canvas {
             flex-grow: 1;
@@ -100,26 +148,19 @@
             display: flex;
             flex-direction: column;
         }
-        
-        #bill-tabs-container {
-            background-color: var(--surface-color);
-            padding: 0.5rem var(--gap) 0;
-            display: flex;
-            gap: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
-            overflow-x: auto;
-        }
+
         .tab-button {
-            padding: 0.5rem 1rem;
+            padding: 0.7rem 1.1rem;
             cursor: pointer;
             background-color: transparent;
             border: none;
             border-bottom: 3px solid transparent;
-            font-size: 0.9em;
-            color: var(--subtle-text);
+            margin-bottom: -1px; /* Overlap the container border */
+            font-size: 0.95em;
+            color: var(--secondary-color);
             position: relative;
-            transition: all 0.3s;
             flex-shrink: 0;
+            transition: color 0.3s, border-color 0.3s;
         }
         .tab-button.active {
             color: var(--primary-color);
@@ -189,11 +230,17 @@
         .item-input {
             background-color: var(--bg-color); color: var(--text-color);
             border: 1px solid var(--border-color); border-radius: 6px;
-            padding: 6px 8px; text-align: right; width: 100%;
+            padding: 6px 8px; text-align: right; width: 100%; box-sizing: border-box;
         }
         .col-qty .item-input { width: 60px; text-align: center; margin: auto; }
-        .delete-item-btn { background: transparent; border: none; color: var(--danger-color); cursor: pointer; transition: all 0.2s; }
-        .delete-item-btn:hover { transform: scale(1.2); }
+        .delete-item-btn { 
+            background: transparent; border: none; color: var(--danger-color); 
+            cursor: pointer; transition: all 0.2s; display: flex; 
+            align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%;
+        }
+        .delete-item-btn:hover { transform: scale(1.1); background-color: rgba(220, 53, 69, 0.1); }
+        .delete-item-btn svg { width: 18px; height: 18px; }
+
         
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -210,13 +257,17 @@
         .modal-body { padding: 2rem; flex-grow: 1; overflow-y: auto; }
         .modal-footer {
             padding: 1.5rem 2rem; border-top: 1px solid var(--border-color);
-            background-color: var(--bg-color); display: flex; justify-content: flex-end; align-items: center;
+            background-color: var(--bg-color); display: flex; justify-content: flex-end; align-items: center; gap: 0.8rem;
         }
         #product-mgmt-modal .modal-content, #history-modal .modal-content, #settings-modal .modal-content, #report-modal .modal-content { max-width: 90vw; width: 1400px; height: 90vh; }
         
+        .input-with-icon { position: relative; }
+        .input-with-icon .icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--secondary-color); pointer-events: none; }
+        .input-with-icon input { padding-left: 36px; }
+
         input, select {
             background-color: var(--surface-color); color: var(--text-color);
-            border: 1px solid var(--border-color); border-radius: 8px; padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color); border-radius: 8px; padding: 0.8rem 1rem; width: 100%; box-sizing: border-box;
         }
         input:focus, select:focus {
             outline: none; border-color: var(--primary-color);
@@ -226,7 +277,8 @@
             background-color: var(--primary-color); color: #FFFFFF; border: none;
             padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer;
             font-size: 1.05em; font-family: 'Sarabun', sans-serif;
-            transition: all 0.2s ease; font-weight: bold;
+            transition: all 0.2s ease; font-weight: bold; display: inline-flex;
+            align-items: center; justify-content: center; gap: 8px;
         }
         button:hover { filter: brightness(110%); }
         button.finish-sale { background-color: var(--success-color); }
@@ -235,10 +287,10 @@
         
         #history-table, #report-table { width: 100%; border-collapse: collapse; color: var(--text-color); }
         #history-table th, #history-table td, #report-table th, #report-table td { border-bottom: 1px solid var(--border-color); padding: 1rem; text-align: left; }
-        #history-table th, #report-table th { background-color: var(--bg-color); }
+        #history-table th, #report-table th { background-color: var(--bg-color); font-weight: bold; position: sticky; top: 0; }
         #history-table tr:hover, #report-table tr:hover { background-color: rgba(32, 201, 151, 0.05); }
         
-        .payment-row { border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: baseline;}
+        .payment-row { border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: baseline;}
         #payment-total-final { font-size: 2.8em; color: var(--primary-color); }
         #cash-received-input { font-size: 2.2em; text-align: right; width: 50%; }
         #payment-change { font-size: 3.2em; color: var(--success-color); }
@@ -251,11 +303,16 @@
         .price-tier-row { display: grid; grid-template-columns: 1fr 1fr 40px; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem; }
         .filter-section { display: grid; gap: 1.5rem; align-items: end; margin-bottom: 1.5rem; }
         .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--subtle-text); font-size: 0.9em; }
+
+        .pagination-controls { display: flex; align-items: center; }
         .pagination-controls button { background-color: var(--surface-color); color: var(--primary-color); border: 1px solid var(--primary-color); padding: 0.5rem 1rem; margin: 0 0.25rem; border-radius: 6px; cursor: pointer; transition: background-color 0.2s, color 0.2s; height: auto; min-width: 40px; }
-        .pagination-controls button:hover:not(:disabled) { background-color: var(--primary-color); color: var(--white-color); filter: brightness(100%); }
-        .pagination-controls button.active { background-color: var(--primary-color); color: var(--white-color); font-weight: bold; }
-        .pagination-controls button:disabled { background-color: var(--light-bg); border-color: var(--border-color); color: var(--secondary-color); cursor: not-allowed; opacity: 0.6; }
+        .pagination-controls button:hover:not(:disabled) { background-color: var(--primary-color); color: #FFFFFF; filter: brightness(100%); }
+        .pagination-controls button.active { background-color: var(--primary-color); color: #FFFFFF; font-weight: bold; }
+        .pagination-controls button:disabled { background-color: var(--bg-color); border-color: var(--border-color); color: var(--secondary-color); cursor: not-allowed; opacity: 0.6; }
         .pagination-info { margin: 0 1rem; color: var(--secondary-color); font-size: 0.9em; }
+        
+        #product-list-container { flex-grow: 1; overflow-y: auto; }
         .product-list-row { display: grid; grid-template-columns: 2fr 1fr 1.5fr 150px; gap: 1.5rem; padding: 1rem; border-bottom: 1px solid var(--border-color); align-items: center; transition: background-color 0.2s; }
         .product-list-row:last-child { border-bottom: none; }
         .product-list-row.product-list-header { background-color: var(--bg-color); font-weight: bold; position: sticky; top: 0; z-index: 1; }
@@ -298,43 +355,49 @@
     </aside>
 
     <main class="main-content">
-        <div id="bill-tabs-container"></div>
-        <div class="command-bar-wrapper">
-            <input type="text" id="main-command-input" placeholder="ค้นหาสินค้า หรือพิมพ์ '/help'..." autofocus>
+        <div id="top-bar-container">
+            <div id="bill-tabs-container"></div>
+            <div id="live-summary-container"></div>
         </div>
         <div class="pos-canvas" id="pos-canvas"></div>
+        <div class="command-bar-wrapper">
+             <label for="main-command-input" style="font-size: 0.8em; color: var(--subtle-text); margin-bottom: 0.5rem; display: block;">F2:บิลใหม่ | F5:ค้นหา | F8:จำนวน | F9:ชำระเงิน | F11:ส่วนลด | Del:ล้าง/ปิด</label>
+            <input type="text" id="main-command-input" placeholder="ค้นหาสินค้า หรือพิมพ์ '/help'..." autofocus>
+        </div>
     </main>
 </div>
 
 
-<!-- MODALS -->
 <div id="history-modal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
             <h2>ประวัติการขาย</h2>
             <div class="filter-section" style="grid-template-columns: 1fr 1.5fr 1fr; gap: 1rem;">
-                <div class="filter-group">
+                <div class="form-group">
                     <label for="history-search-input">ค้นหาบิล / สินค้า</label>
-                    <input type="text" id="history-search-input" placeholder="รหัสการขาย หรือชื่อสินค้า...">
+                     <div class="input-with-icon">
+                         <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+                         <input type="text" id="history-search-input" placeholder="รหัสการขาย หรือชื่อสินค้า...">
+                    </div>
                 </div>
-                <div class="filter-group">
+                <div class="form-group">
                     <label for="start-date">ช่วงวันที่</label>
                     <div style="display: flex; gap: 0.5rem;">
                         <input type="date" id="start-date" title="วันที่เริ่มต้น">
                         <input type="date" id="end-date" title="วันที่สิ้นสุด">
                     </div>
                 </div>
-                <div class="filter-group">
+                <div class="form-group">
                     <label>&nbsp;</label>
                     <div style="display: flex; gap: 0.5rem;">
                         <button type="button" id="filter-history-btn" style="width: 100%;">ค้นหา</button>
-                        <button type="button" id="today-history-btn" style="background-color: var(--secondary-color); width: 100%;">วันนี้</button>
+                        <button type="button" id="today-history-btn" style="background-color: var(--info-color); width: 100%;">วันนี้</button>
                     </div>
                 </div>
             </div>
-            <div class="button-group" style="justify-content: flex-start; margin-top:0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <button type="button" id="export-excel-btn">Export to Excel</button>
-                <button type="button" id="clear-all-history-btn" class="clear-cart" style="margin-left: auto;">ล้างประวัติทั้งหมด</button>
+                <button type="button" id="clear-all-history-btn" class="clear-cart">ล้างประวัติทั้งหมด</button>
             </div>
             <div id="history-table-wrapper" style="flex-grow:1; overflow-y:auto; border:1px solid var(--border-color); border-radius:8px;">
                 <table id="history-table">
@@ -351,12 +414,18 @@
     <div class="modal-content" style="max-width: 800px;">
         <div class="modal-body">
             <h2>การตั้งค่าและจัดการ</h2>
-            <div class="button-group">
-                <button type="button" id="manage-products-btn" style="background-color: var(--primary-color);">จัดการสินค้า</button>
-                <button type="button" id="import-from-sheet-btn" style="background-color: var(--success-color);">นำเข้า/อัปเดตจาก Google Sheet</button>
+            <div style="display:flex; gap: 1rem;">
+                <button type="button" id="manage-products-btn" style="background-color: var(--primary-color);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    จัดการสินค้า
+                </button>
+                <button type="button" id="import-from-sheet-btn" style="background-color: var(--success-color);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+                    นำเข้า/อัปเดตจาก Google Sheet
+                </button>
             </div>
-             <div style="margin-top: 1rem; display: flex; align-items: center;">
-                <input type="checkbox" id="auto-import-toggle" style="width: auto; margin-right: 0.5rem;" checked>
+             <div style="margin-top: 1.5rem; display: flex; align-items: center;">
+                <input type="checkbox" id="auto-import-toggle" style="width: auto; height: auto; margin-right: 0.5rem;" checked>
                 <label for="auto-import-toggle">นำเข้าข้อมูลอัตโนมัติเมื่อมีการเปลี่ยนแปลง (ตรวจสอบทุก 5 นาที)</label>
             </div>
         </div>
@@ -369,26 +438,29 @@
         <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
             <h2>รายงานการขาย</h2>
             <div class="filter-section" style="grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 1rem;">
-                <div class="filter-group">
+                <div class="form-group">
                     <label>ช่วงวันที่</label>
                     <div style="display: flex; gap: 0.5rem;"><input type="date" id="report-start-date"><input type="date" id="report-end-date"></div>
                 </div>
-                 <div class="filter-group">
+                 <div class="form-group">
                     <label for="report-product-search">ค้นหาสินค้าในรายงาน</label>
                     <input type="text" id="report-product-search" placeholder="พิมพ์ชื่อสินค้า...">
                 </div>
-                <div class="filter-group">
+                <div class="form-group">
                      <label>&nbsp;</label>
                      <div style="display: flex; gap: 0.5rem;">
-                         <button type="button" id="report-today-btn" style="background-color: var(--secondary-color);">วันนี้</button>
+                         <button type="button" id="report-today-btn" style="background-color: var(--info-color);">วันนี้</button>
                          <button type="button" id="report-week-btn">สัปดาห์นี้</button>
                          <button type="button" id="report-month-btn">เดือนนี้</button>
                     </div>
                 </div>
-                <div class="filter-group">
+                <div class="form-group">
                      <label>&nbsp;</label>
                      <button type="button" id="generate-report-btn">สร้างรายงาน</button>
                 </div>
+            </div>
+            <div style="display: flex; justify-content: flex-start; margin-bottom: 1rem;">
+                <button type="button" id="export-report-excel-btn">Export to Excel</button>
             </div>
             <div id="report-table-wrapper" style="flex-grow:1; overflow-y:auto; border:1px solid var(--border-color); border-radius:8px;">
                 <table id="report-table">
@@ -400,6 +472,7 @@
         <div class="modal-footer"><button type="button" class="close-main-modal-btn" style="background-color: var(--subtle-text);">ปิด</button></div>
     </div>
 </div>
+
 
 <div id="payment-modal" class="modal-overlay">
     <div class="modal-content">
@@ -419,14 +492,14 @@
 <div id="info-modal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header"><h3 id="info-modal-title" style="color: var(--primary-color);"></h3></div>
-        <div class="modal-body"><p id="info-modal-text" style="white-space: pre-wrap;"></p></div>
+        <div class="modal-body"><p id="info-modal-text" style="white-space: pre-wrap; line-height: 1.6;"></p></div>
         <div class="modal-footer" style="justify-content:center"><button type="button" id="info-modal-ok-btn">ตกลง (Enter/ESC)</button></div>
     </div>
 </div>
 
 <div id="delete-confirm-modal" class="modal-overlay">
     <div class="modal-content" style="max-width: 500px;">
-        <div class="modal-header"><h3 id="delete-confirm-title" style="color:var(--danger-color)">ยืนยันการลบ</h3></div>
+        <div class="modal-header"><h3 id="delete-confirm-title" style="color:var(--danger-color)">ยืนยันการกระทำ</h3></div>
         <div class="modal-body"><p id="delete-confirm-text"></p></div>
         <div class="modal-footer">
             <button type="button" id="cancel-delete-btn" style="background-color:var(--subtle-text)">ยกเลิก</button>
@@ -437,13 +510,21 @@
 
 <div id="product-mgmt-modal" class="modal-overlay">
     <div class="modal-content">
-        <div class="modal-header" style="padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+        <div class="modal-header" style="padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border: none;">
             <h3 style="border:none; margin: 0;">จัดการสินค้า</h3>
-            <input type="text" id="product-search-input" placeholder="ค้นหาสินค้า..." style="width: 300px;">
-            <button type="button" id="add-new-product-btn" class="finish-sale">เพิ่มสินค้าใหม่</button>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                 <div class="input-with-icon" style="width: 300px;">
+                     <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+                     <input type="text" id="product-search-input" placeholder="ค้นหาสินค้า...">
+                </div>
+                <button type="button" id="add-new-product-btn" class="finish-sale">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    เพิ่มสินค้าใหม่
+                </button>
+            </div>
         </div>
         <div class="modal-body" id="product-list-container" style="padding: 0 1.5rem;"></div>
-        <div class="modal-footer">
+        <div class="modal-footer" style="justify-content: space-between;">
             <div id="product-list-pagination"></div>
             <button type="button" id="close-product-mgmt-btn" style="background-color: var(--subtle-text);">ปิด</button>
         </div>
@@ -466,7 +547,10 @@
                 <div class="form-column-right">
                     <h4>หน่วยและราคาขาย</h4>
                     <div id="pricing-units-container"></div>
-                    <button type="button" id="add-pricing-unit-btn" style="background-color: var(--secondary-color);">เพิ่มหน่วยขาย</button>
+                    <button type="button" id="add-pricing-unit-btn" style="background-color: var(--secondary-color);">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        เพิ่มหน่วยขาย
+                    </button>
                 </div>
             </div>
             <div class="modal-footer">
@@ -536,7 +620,7 @@
 <script>
 const POS_APP = {
     config: {
-        googleSheetUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTT3t_8Hx7WcD8uUi2IGt1zDbOMB3MSK57dYnfqrrut3do_Gw2hzYSG9IBIEg8fg7uTEL2sVq-IfVJR/pub?output=csv',
+        googleSheetUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTT3t_8Hx7WcD8uUi2IGt1zDbOMB3MSK57dYnfqrrut3do_Gw2hzYSG9IBIEg8fg7uTEL2sVq-IfVJR/pub?gid=0&single=true&output=csv',
         thaiToEngMap: { 'ๅ': '1', '/': '2', '-': '3', 'ภ': '4', 'ถ': '5', 'ุ': '6', 'ึ': '7', 'ค': '8', 'ต': '9', 'จ': '0', 'ข': '-', 'ช': '=', 'ๆ': 'q', 'ไ': 'w', 'ำ': 'e', 'พ': 'r', 'ะ': 't', 'ั': 'y', 'ี': 'u', 'ร': 'i', 'น': 'o', 'ย': 'p', 'บ': '[', 'ล': ']', 'ฟ': 'a', 'ห': 's', 'ก': 'd', 'ด': 'f', 'เ': 'g', '้': 'h', '่': 'j', 'า': 'k', 'ส': 'l', 'ว': ';', 'ง': "'", 'ผ': 'z', 'ป': 'x', 'แ': 'c', 'อ': 'v', 'ิ': 'b', 'ท': 'n', 'ม': 'm', 'ใ': ',', 'ฝ': '.', 'ซ': '/' }
     },
     state: {
@@ -557,6 +641,8 @@ const POS_APP = {
         lastSheetHash: null,
         autoImportInterval: null,
         isRestrictedMode: true,
+        currentReportData: [],
+        currentReportSalesDocs: [],
     },
 
     init() {
@@ -569,6 +655,7 @@ const POS_APP = {
     start() {
         this.listenForProducts();
         this.setupEventListeners();
+        this.createLiveSummaryElement(); // Create the live summary element on start
         if (this.state.tabs.size === 0) {
             this.addNewSaleTab();
         } else {
@@ -577,6 +664,8 @@ const POS_APP = {
         if (document.getElementById('auto-import-toggle')?.checked) {
             this.startAutoImportPolling();
         }
+        // Initial load of all history to calculate summary
+        this.loadSalesHistoryFromFirestore(); 
     },
 
     // =================================================================
@@ -598,14 +687,10 @@ const POS_APP = {
         }
         
         if (canvas.innerHTML.trim() === '') {
-            if (this.state.isRestrictedMode) {
-                 canvas.innerHTML = `<div style="text-align:center; color: var(--subtle-text); margin-top: auto; padding-bottom: 5vh;">
-                    <h1 style="font-size: 2.5rem; margin:0;">NextGen POS</h1>
-                    <p>เริ่มต้นโดยการค้นหาสินค้า หรือพิมพ์ '/help' เพื่อดูคำสั่งทั้งหมด</p>
-                 </div>`;
-            } else {
-                canvas.appendChild(this.createSalesSummaryElement());
-            }
+             canvas.innerHTML = `<div style="text-align:center; color: var(--subtle-text); margin-top: auto; padding-bottom: 5vh;">
+                <h1 style="font-size: 2.5rem; margin:0;">NextGen POS</h1>
+                <p>เริ่มต้นโดยการค้นหาสินค้า หรือพิมพ์ '/help' เพื่อดูคำสั่งทั้งหมด</p>
+             </div>`;
         }
         this.renderTabs();
     },
@@ -626,7 +711,12 @@ const POS_APP = {
         });
         const total = subtotal - activeDiscount;
 
+        const editStatusHTML = this.state.tabs.get(this.state.activeTabId)?.isEditing 
+            ? `<div style="padding: 10px; background-color: #fff3cd; color: #856404; border-radius: 8px; margin-bottom: 1rem;">กำลังแก้ไขบิล. เมื่อชำระเงิน, บิลเก่าจะถูกลบและสร้างบิลใหม่.</div>`
+            : '';
+
         cartContainer.innerHTML = `
+            ${editStatusHTML}
             <div class="cart-header">
                 <h2>${this.state.tabs.get(this.state.activeTabId)?.name || 'ตะกร้าสินค้า'}</h2>
                 <div class="cart-totals-summary">
@@ -687,22 +777,45 @@ const POS_APP = {
         return resultsContainer;
     },
 
-    createSalesSummaryElement() {
-        const summaryContainer = document.createElement('div');
-        summaryContainer.id = 'sales-summary-section';
-        summaryContainer.innerHTML = `
-            <h3 id="summary-title" style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--text-color);">สรุปยอดขาย (วันนี้)</h3>
-            <div class="summary-grid">
-                <div class="summary-item"><div class="label">ยอดขายรวม</div><div class="value" id="summary-total-sales">0.00</div></div>
-                <div class="summary-item"><div class="label">ส่วนลดรวม</div><div class="value" id="summary-total-discount" style="color: var(--warning-color);">0.00</div></div>
-                <div class="summary-item"><div class="label">ยอดขายสุทธิ</div><div class="value" id="summary-net-sales" style="color: var(--success-color);">0.00</div></div>
-                <div class="summary-item"><div class="label">กำไร</div><div class="value" id="summary-profit" style="color: var(--primary-color);">0.00</div></div>
-                <div class="summary-item"><div class="label">จำนวนบิล</div><div class="value" id="summary-bill-count">0</div></div>
+    // [MODIFIED] Create and update live summary
+    createLiveSummaryElement() {
+        const container = document.getElementById('live-summary-container');
+        container.innerHTML = `
+            <div class="summary-grid" id="report-summary-grid">
+                <div class="summary-item"><div class="label">ยอดขายวันนี้</div><div class="value" id="summary-net-sales">0.00</div></div>
+                <div class="summary-item"><div class="label">กำไรวันนี้</div><div class="value" id="summary-profit">0.00</div></div>
+                <div class="summary-item"><div class="label">บิลวันนี้</div><div class="value" id="summary-bill-count">0</div></div>
             </div>`;
-        this.calculateSummaryForDisplayedHistory(this.state.salesHistory);
-        return summaryContainer;
+        this.toggleLiveSummaryVisibility();
     },
-    
+
+    updateLiveSummary() {
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+        const todaySales = this.state.salesHistory.filter(s => new Date(s.timestamp) >= todayStart);
+
+        let netSales = 0, totalCost = 0;
+        todaySales.forEach(sale => {
+            netSales += sale.total || 0;
+            if (sale.items && Array.isArray(sale.items)) {
+                sale.items.forEach(item => {
+                    totalCost += (item.cost || 0) * (item.quantity || 0);
+                });
+            }
+        });
+        
+        document.getElementById('summary-net-sales').textContent = netSales.toFixed(2);
+        document.getElementById('summary-profit').textContent = (netSales - totalCost).toFixed(2);
+        document.getElementById('summary-bill-count').textContent = todaySales.length;
+    },
+
+    toggleLiveSummaryVisibility() {
+        const summaryContainer = document.getElementById('live-summary-container');
+        if (summaryContainer) {
+            summaryContainer.style.display = this.state.isRestrictedMode ? 'none' : 'block';
+        }
+    },
+
     setupEventListeners() {
         document.getElementById('app-sidebar').addEventListener('click', (e) => {
             const button = e.target.closest('.sidebar-btn');
@@ -734,8 +847,18 @@ const POS_APP = {
         // History Modal
         document.getElementById('filter-history-btn').addEventListener('click', this.filterHistoryByDateTime.bind(this));
         document.getElementById('today-history-btn').addEventListener('click', this.filterHistoryForToday.bind(this));
+        document.getElementById('history-search-input').addEventListener('input', () => this.updateHistoryDisplay());
         document.getElementById('export-excel-btn').addEventListener('click', this.exportToExcel.bind(this));
-        document.getElementById('clear-all-history-btn').addEventListener('click', () => this.showDeleteConfirmModal('คุณแน่ใจหรือไม่ว่าต้องการล้างประวัติทั้งหมด?', this.executeClearAllHistory.bind(this)));
+        document.getElementById('clear-all-history-btn').addEventListener('click', () => this.showDeleteConfirmModal('คุณแน่ใจหรือไม่ว่าต้องการล้างประวัติทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้', this.executeClearAllHistory.bind(this)));
+        
+        // Report Modal
+        document.getElementById('generate-report-btn').addEventListener('click', () => this.generateSalesReport());
+        document.getElementById('report-today-btn').addEventListener('click', () => this.setReportDateRange('today'));
+        document.getElementById('report-week-btn').addEventListener('click', () => this.setReportDateRange('week'));
+        document.getElementById('report-month-btn').addEventListener('click', () => this.setReportDateRange('month'));
+        document.getElementById('export-report-excel-btn').addEventListener('click', () => this.exportReportToExcel());
+        document.getElementById('report-product-search').addEventListener('input', () => this.updateReportView());
+
 
         // Product Management
         document.getElementById('close-product-mgmt-btn').addEventListener('click', () => this.showModal(false));
@@ -750,10 +873,9 @@ const POS_APP = {
             }
         });
 
-
         // Product Editor
         document.getElementById('product-editor-form').addEventListener('submit', this.handleSaveProduct.bind(this));
-        document.getElementById('cancel-product-editor-btn').addEventListener('click', () => this.showModal('product-mgmt'));
+        document.getElementById('cancel-product-editor-btn').addEventListener('click', this.hideProductEditorModal.bind(this));
         document.getElementById('add-pricing-unit-btn').addEventListener('click', this.handleAddPricingUnit.bind(this));
         document.getElementById('product-editor-modal').addEventListener('click', this.handlePricingUnitActions.bind(this));
     },
@@ -826,6 +948,7 @@ const POS_APP = {
             this.state.isRestrictedMode = false;
             this.showInfoModal('Admin Mode', 'เปิดใช้งานโหมดผู้ดูแล');
             mainInput.value = '';
+            this.toggleLiveSummaryVisibility();
             this.renderCanvas();
             return;
         }
@@ -833,6 +956,7 @@ const POS_APP = {
             this.state.isRestrictedMode = true;
             this.showInfoModal('Admin Mode', 'ปิดใช้งานโหมดผู้ดูแล');
             mainInput.value = '';
+            this.toggleLiveSummaryVisibility();
             this.renderCanvas();
             return;
         }
@@ -936,6 +1060,7 @@ const POS_APP = {
                 this.setActiveOverlay(modalName);
                 if(modalName === 'history') { this.filterHistoryForToday(); }
                 if(modalName === 'product-mgmt') { this.renderProductList(); }
+                if(modalName === 'report') { this.setReportDateRange('today'); }
             }
         }
     },
@@ -965,18 +1090,22 @@ const POS_APP = {
         if (tab) tab.discount = value;
     },
     
-    addNewSaleTab() {
+    addNewSaleTab(customName = '') {
         if (this.state.tabs.size >= 5) {
             this.showInfoModal("เปิดบิลเกินกำหนด", "ไม่สามารถเปิดบิลใหม่ได้เกิน 5 บิล", true);
-            return;
+            return null;
         }
-        let nextSaleNumber = 1;
-        const usedNumbers = Array.from(this.state.tabs.values()).map(t => t.name ? parseInt(t.name.split(' ')[1]) : 0);
-        while(usedNumbers.includes(nextSaleNumber)) { nextSaleNumber++; }
-        const tabName = `บิล ${nextSaleNumber}`;
+        let tabName = customName;
+        if (!tabName) {
+            let nextSaleNumber = 1;
+            const usedNumbers = Array.from(this.state.tabs.values()).map(t => t.name ? parseInt(t.name.split(' ')[1]) : 0);
+            while(usedNumbers.includes(nextSaleNumber)) { nextSaleNumber++; }
+            tabName = `บิล ${nextSaleNumber}`;
+        }
         const tabId = 'sale-' + Date.now();
-        this.state.tabs.set(tabId, { cart: [], discount: 0, name: tabName });
+        this.state.tabs.set(tabId, { cart: [], discount: 0, name: tabName, isEditing: false, originalFirestoreId: null });
         this.switchTab(tabId);
+        return tabId;
     },
 
     switchTab(tabId) {
@@ -1068,6 +1197,109 @@ const POS_APP = {
         if (cart) cart.splice(index, 1);
         this.renderCanvas();
     },
+    
+     // =================================================================
+    // == REPORTING LOGIC
+    // =================================================================
+    setReportDateRange(period) {
+        const startDateInput = document.getElementById('report-start-date');
+        const endDateInput = document.getElementById('report-end-date');
+        const today = new Date();
+        let startDate, endDate = new Date(today);
+
+        switch (period) {
+            case 'today': startDate = new Date(today); break;
+            case 'week':
+                startDate = new Date(today);
+                const dayOfWeek = today.getDay();
+                const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+                startDate.setDate(diff);
+                break;
+            case 'month': startDate = new Date(today.getFullYear(), today.getMonth(), 1); break;
+        }
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(23, 59, 59, 999);
+        const toInputFormat = (date) => date.toISOString().split('T')[0];
+        startDateInput.value = toInputFormat(startDate);
+        endDateInput.value = toInputFormat(endDate);
+        this.generateSalesReport();
+    },
+
+    async generateSalesReport() {
+        const startDateInput = document.getElementById('report-start-date').value;
+        const endDateInput = document.getElementById('report-end-date').value;
+        if (!startDateInput || !endDateInput) { this.showInfoModal("ข้อมูลไม่ครบถ้วน", "กรุณาเลือกช่วงวันที่", true); return; }
+
+        document.getElementById('report-body').innerHTML = '<tr><td colspan="5" style="text-align:center;">กำลังสร้างรายงาน...</td></tr>';
+        this.state.currentReportData = [];
+
+        const startDateTime = new Date(startDateInput); startDateTime.setHours(0, 0, 0, 0);
+        const endDateTime = new Date(endDateInput); endDateTime.setHours(23, 59, 59, 999);
+
+        try {
+            const { db, api } = window.firebaseServices;
+            const q = api.query(this.getSalesHistoryCollectionRef(), api.where("timestamp", ">=", startDateTime.toISOString()), api.where("timestamp", "<=", endDateTime.toISOString()));
+            const querySnapshot = await api.getDocs(q);
+            const salesDocs = querySnapshot.docs.map(doc => doc.data());
+            if (salesDocs.length === 0) { document.getElementById('report-body').innerHTML = '<tr><td colspan="5" style="text-align:center;">ไม่พบข้อมูล</td></tr>'; return; }
+
+            const aggregatedData = {};
+            salesDocs.forEach(sale => {
+                sale.items.forEach(item => {
+                    const key = `${item.productName}_${item.baseUnit}`;
+                    if (!aggregatedData[key]) {
+                        aggregatedData[key] = { productName: item.productName, baseUnit: item.baseUnit, totalQuantity: 0, totalRevenue: 0, totalCost: 0 };
+                    }
+                    const itemRevenue = item.price * item.quantity;
+                    const itemCost = item.cost * item.quantity;
+                    const quantityInBaseUnits = item.quantity * (item.conversionFactor || 1);
+                    aggregatedData[key].totalQuantity += quantityInBaseUnits;
+                    aggregatedData[key].totalRevenue += itemRevenue;
+                    aggregatedData[key].totalCost += itemCost;
+                });
+            });
+            const reportArray = Object.values(aggregatedData).map(item => ({ ...item, totalProfit: item.totalRevenue - item.totalCost })).sort((a, b) => b.totalProfit - a.totalProfit);
+            
+            this.state.currentReportData = reportArray;
+            this.state.currentReportSalesDocs = salesDocs;
+            document.getElementById('report-product-search').value = '';
+            this.updateReportView();
+
+        } catch (error) {
+            console.error("Error generating sales report:", error);
+            this.showInfoModal("เกิดข้อผิดพลาด", `ไม่สามารถสร้างรายงานได้: ${error.message}`, true);
+        }
+    },
+
+    updateReportView() {
+        const reportBody = document.getElementById('report-body');
+        reportBody.innerHTML = '';
+
+        const searchTerm = document.getElementById('report-product-search').value.toLowerCase();
+        const filteredReportArray = this.state.currentReportData.filter(item => item.productName.toLowerCase().includes(searchTerm));
+
+        if (filteredReportArray.length > 0) {
+            filteredReportArray.forEach(item => {
+                const row = reportBody.insertRow();
+                row.innerHTML = `<td><strong>${item.productName}</strong></td><td>${item.totalQuantity.toFixed(2)} ${item.baseUnit}</td><td style="text-align:right;">${item.totalRevenue.toFixed(2)}</td><td style="text-align:right;">${item.totalCost.toFixed(2)}</td><td style="text-align:right; font-weight:bold; color: ${item.totalProfit >= 0 ? 'var(--success-color)' : 'var(--danger-color)'};">${item.totalProfit.toFixed(2)}</td>`;
+            });
+        } else {
+             reportBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">ไม่พบข้อมูล</td></tr>';
+        }
+    },
+    
+    exportReportToExcel() {
+        if (this.state.currentReportData.length === 0) { this.showInfoModal("ไม่มีข้อมูล", "ไม่มีข้อมูลสำหรับส่งออก", false); return; }
+        const dataToExport = this.state.currentReportData.map(item => ({ 'สินค้า': item.productName, 'จำนวนที่ขาย (หน่วยเล็ก)': item.totalQuantity, 'หน่วย': item.baseUnit, 'ยอดขายรวม (บาท)': item.totalRevenue, 'ต้นทุนรวม (บาท)': item.totalCost, 'กำไรรวม (บาท)': item.totalProfit }));
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'รายงานการขาย');
+        worksheet['!cols'] = [ { wch: 40 }, { wch: 25 }, { wch: 15 }, { wch: 20 }, { wch: 20 }, { wch: 20 } ];
+        const startDate = document.getElementById('report-start-date').value;
+        const endDate = document.getElementById('report-end-date').value;
+        XLSX.writeFile(workbook, `SalesReport_${startDate}_to_${endDate}.xlsx`);
+    },
+
 
     // =================================================================
     // == ALL OTHER FUNCTIONS (UNCHANGED FROM ORIGINAL)
@@ -1131,12 +1363,15 @@ const POS_APP = {
         modal.querySelector('#delete-confirm-text').textContent = text;
         modal.style.display = 'flex';
         const confirmBtn = modal.querySelector('#confirm-delete-btn');
-        confirmBtn.onclick = () => {
+        const newConfirmBtn = confirmBtn.cloneNode(true); // Re-clone to remove old listeners
+        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+        
+        newConfirmBtn.onclick = () => {
             this.showModal(false);
-            onConfirm();
+            if(onConfirm) onConfirm();
         };
         modal.querySelector('#cancel-delete-btn').onclick = () => this.showModal(false);
-        confirmBtn.focus();
+        newConfirmBtn.focus();
     },
 
     showPaymentModal() {
@@ -1150,6 +1385,10 @@ const POS_APP = {
         document.getElementById('payment-change').textContent = "0.00";
         const cashInput = document.getElementById('cash-received-input');
         cashInput.value = '';
+        
+        cashInput.oninput = this.calculateChange.bind(this);
+        cashInput.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); this.calculateChange(); document.getElementById('confirm-sale-btn').focus(); }};
+
         this.showModal('payment');
         cashInput.focus();
     },
@@ -1158,39 +1397,57 @@ const POS_APP = {
         const total = parseFloat(document.getElementById('payment-total-final').textContent);
         const cashReceived = parseFloat(document.getElementById('cash-received-input').value) || 0;
         const change = cashReceived - total;
-        document.getElementById('payment-change').textContent = change >= 0 ? change.toFixed(2) : 'เงินไม่พอ';
+        const changeEl = document.getElementById('payment-change');
+        changeEl.textContent = change >= 0 ? change.toFixed(2) : 'เงินไม่พอ';
+        changeEl.style.color = change >= 0 ? 'var(--success-color)' : 'var(--danger-color)';
     },
 
     async confirmSale() {
         if (this.state.isSaving) return;
-        this.state.isSaving = true;
-
+        
         const tabData = this.state.tabs.get(this.state.activeTabId);
-        if (!tabData || tabData.cart.length === 0) {
-            this.state.isSaving = false;
-            return;
-        }
+        if (!tabData || tabData.cart.length === 0) return;
 
         const { cart, discount } = tabData;
         const subtotal = cart.reduce((sum, item) => sum + (this.getPriceForQuantity(item.productUnit.pricingUnit, item.quantity) * item.quantity), 0);
         const finalTotal = subtotal - discount;
+        const cashReceived = parseFloat(document.getElementById('cash-received-input').value) || 0;
+        if (cashReceived < finalTotal) { this.showInfoModal("ข้อผิดพลาด", "จำนวนเงินที่รับมาไม่เพียงพอ", true); return; }
+
+        this.state.isSaving = true;
+        
+        const saleRecordItems = cart.map(item => {
+            const { productUnit, quantity } = item;
+            const conversionFactor = productUnit.pricingUnit.conversionFactor || 1;
+            const costPerSellingUnit = productUnit.pricingUnit.cost || 0;
+            return {
+                cartItemId: item.cartItemId, name: productUnit.display, unit: productUnit.pricingUnit.unitName,
+                quantity: quantity, price: this.getPriceForQuantity(productUnit.pricingUnit, quantity),
+                cost: costPerSellingUnit, productName: productUnit.productName, baseUnit: productUnit.baseUnit,
+                conversionFactor: conversionFactor
+            };
+        });
 
         const saleRecord = {
-            id: await this.generateSaleId(),
-            timestamp: new Date().toISOString(),
-            items: cart.map(item => ({
-                cartItemId: item.cartItemId, name: item.productUnit.display, quantity: item.quantity,
-                price: this.getPriceForQuantity(item.productUnit.pricingUnit, item.quantity)
-            })),
-            subtotal, discount, total: finalTotal,
+            id: await this.generateSaleId(), timestamp: new Date().toISOString(), items: saleRecordItems,
+            subtotal, discount, total: finalTotal, cashReceived, change: cashReceived - finalTotal
         };
 
         try {
-            await window.firebaseServices.api.addDoc(this.getSalesHistoryCollectionRef(), saleRecord);
+            const { db, api } = window.firebaseServices;
+            const collectionRef = this.getSalesHistoryCollectionRef();
+            if (tabData.isEditing && tabData.originalFirestoreId) {
+                const batch = api.writeBatch(db);
+                batch.delete(api.doc(db, collectionRef.path, tabData.originalFirestoreId));
+                batch.set(api.doc(collectionRef), saleRecord);
+                await batch.commit();
+            } else {
+                await api.addDoc(collectionRef, saleRecord);
+            }
             this.showModal(false);
             this.performCloseTab(this.state.activeTabId);
         } catch(e) {
-            this.showInfoModal("ผิดพลาด", "ไม่สามารถบันทึกการขายได้", true);
+            this.showInfoModal("ผิดพลาด", `ไม่สามารถบันทึกการขายได้: ${e.message}`, true);
         } finally {
             this.state.isSaving = false;
         }
@@ -1208,12 +1465,9 @@ const POS_APP = {
     escapeHtml(string) { const p = document.createElement("p"); p.textContent = string; return p.innerHTML; },
     translateThaiToEng(input) { return input.split('').map(char => this.config.thaiToEngMap[char] || char).join(''); },
     
-    // Functions that were missing
     filterHistoryForToday() { 
-        const todayStart = new Date(); 
-        todayStart.setHours(0, 0, 0, 0); 
-        const todayEnd = new Date(); 
-        todayEnd.setHours(23, 59, 59, 999); 
+        const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0); 
+        const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999); 
         document.getElementById('start-date').valueAsDate = todayStart;
         document.getElementById('end-date').valueAsDate = todayEnd;
         this.filterHistoryByDateTime();
@@ -1221,34 +1475,82 @@ const POS_APP = {
     filterHistoryByDateTime() {
         const startDateInput = document.getElementById('start-date').value;
         const endDateInput = document.getElementById('end-date').value;
-        if (!startDateInput || !endDateInput) return;
-        const start = new Date(startDateInput).toISOString();
-        const end = new Date(endDateInput).toISOString();
-        this.loadSalesHistoryFromFirestore(start, end);
+        if (!startDateInput || !endDateInput) { this.loadSalesHistoryFromFirestore(); return; }
+        const start = new Date(startDateInput); start.setHours(0,0,0,0);
+        const end = new Date(endDateInput); end.setHours(23,59,59,999);
+        this.loadSalesHistoryFromFirestore(start.toISOString(), end.toISOString());
     },
     loadSalesHistoryFromFirestore(startDate, endDate) {
+        if (this.state.unsubscribeSalesHistory) this.state.unsubscribeSalesHistory();
         const { query, where, onSnapshot } = window.firebaseServices.api;
-        const q = query(this.getSalesHistoryCollectionRef(), where("timestamp", ">=", startDate), where("timestamp", "<=", endDate));
-        onSnapshot(q, (snapshot) => {
+        let q = this.getSalesHistoryCollectionRef();
+        if(startDate && endDate) {
+            q = query(q, where("timestamp", ">=", startDate), where("timestamp", "<=", endDate));
+        }
+        
+        this.state.unsubscribeSalesHistory = onSnapshot(q, (snapshot) => {
             this.state.salesHistory = [];
             snapshot.forEach(doc => this.state.salesHistory.push({firestoreId: doc.id, ...doc.data()}));
             this.state.salesHistory.sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
             this.updateHistoryDisplay();
+            this.updateLiveSummary(); // [MODIFIED] Update live summary when history changes
         });
     },
     updateHistoryDisplay() {
         const historyBody = document.getElementById('history-body');
         if (!historyBody) return;
-        historyBody.innerHTML = this.state.salesHistory.map(sale => `
+        const searchFilter = document.getElementById('history-search-input').value.toLowerCase().trim();
+        const filteredHistory = this.state.salesHistory.filter(sale => 
+            searchFilter === '' || 
+            sale.id.toLowerCase().includes(searchFilter) ||
+            sale.items.some(item => item.name.toLowerCase().includes(searchFilter))
+        );
+
+        historyBody.innerHTML = filteredHistory.map(sale => {
+            const itemDetails = sale.items.map(item => `${this.escapeHtml(item.name)} (x${item.quantity})`).join('<br>');
+            const actionCellHTML = this.state.isRestrictedMode ? '' : `
+                <button type="button" class="edit-history-btn" onclick="POS_APP.editSaleRecord('${sale.firestoreId}')">แก้ไข</button>
+                <button type="button" class="delete-history-btn" onclick="POS_APP.showDeleteConfirmModal('ต้องการลบรายการขาย ID: ${sale.id}?', () => POS_APP.executeDeleteSaleFromHistory('${sale.firestoreId}'))">ลบ</button>`;
+            return `
             <tr>
                 <td>${new Date(sale.timestamp).toLocaleString('th-TH')}</td>
                 <td>${sale.id}</td>
-                <td>${sale.items.map(i => `${i.name} (x${i.quantity})`).join('<br>')}</td>
+                <td>${itemDetails}</td>
                 <td>${sale.discount.toFixed(2)}</td>
                 <td><strong>${sale.total.toFixed(2)}</strong></td>
-                <td></td>
-            </tr>
-        `).join('');
+                <td>${actionCellHTML}</td>
+            </tr>`;
+        }).join('');
+    },
+     async editSaleRecord(firestoreId) {
+        if (this.state.tabs.size >= 5) { this.showInfoModal("ไม่สามารถแก้ไข", "เปิดบิลครบ 5 บิลแล้ว", true); return; }
+        const saleToEdit = this.state.salesHistory.find(s => s.firestoreId === firestoreId);
+        if (!saleToEdit) { this.showInfoModal("ผิดพลาด", "ไม่พบข้อมูลการขาย", true); return; }
+
+        const newCart = [];
+        for (const item of saleToEdit.items) {
+            const fullProductUnit = this.state.searchableProductUnits.find(p => p.cartItemId === item.cartItemId);
+            if (fullProductUnit) {
+                newCart.push({ cartItemId: item.cartItemId, productUnit: fullProductUnit, quantity: item.quantity });
+            }
+        }
+        if (newCart.length === 0) { this.showInfoModal("ผิดพลาด", "ไม่สามารถนำรายการสินค้ามาแก้ไขได้", true); return; }
+
+        const tabId = this.addNewSaleTab(`แก้ไข #${saleToEdit.id.slice(-4)}`);
+        const tabData = this.state.tabs.get(tabId);
+        tabData.cart = newCart;
+        tabData.discount = saleToEdit.discount || 0;
+        tabData.isEditing = true;
+        tabData.originalFirestoreId = firestoreId;
+        this.renderCanvas();
+        this.closeAllModals();
+    },
+    async executeDeleteSaleFromHistory(firestoreId) {
+        try {
+            await window.firebaseServices.api.deleteDoc(window.firebaseServices.api.doc(this.getSalesHistoryCollectionRef(), firestoreId));
+        } catch (e) {
+            this.showInfoModal("ผิดพลาด", `ไม่สามารถลบได้: ${e.message}`, true);
+        }
     },
     renderProductList(filterText = '') {
         const container = document.getElementById('product-list-container');
@@ -1291,9 +1593,9 @@ const POS_APP = {
         const totalPages = Math.ceil(totalItems / this.state.productsPerPage);
         const currentPage = this.state.productListPage;
         let html = '<div class="pagination-controls">';
-        html += `<button data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>&laquo; ก่อนหน้า</button>`;
+        html += `<button data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>&laquo;</button>`;
         html += `<span class="pagination-info">หน้า ${currentPage} / ${totalPages}</span>`;
-        html += `<button data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>ถัดไป &raquo;</button>`;
+        html += `<button data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>&raquo;</button>`;
         html += '</div>';
         paginationContainer.innerHTML = html;
     },
@@ -1317,6 +1619,9 @@ const POS_APP = {
             this.addPricingUnitRow(); 
         }
         this.showModal('product-editor');
+    },
+     hideProductEditorModal() {
+        this.showModal('product-mgmt');
     },
     addPricingUnitRow(unitData = null) {
         const container = document.getElementById('pricing-units-container');
@@ -1361,15 +1666,132 @@ const POS_APP = {
             });
         }
     },
-    handleSaveProduct(e) { /* ... same as before ... */ },
+    async handleSaveProduct(e) {
+        e.preventDefault();
+        const productCode = document.getElementById('product-code').value.trim();
+        const productName = document.getElementById('product-name').value.trim();
+        if (!productCode || !productName) { this.showInfoModal("ข้อมูลไม่ครบ", "กรุณากรอกรหัสและชื่อสินค้า", true); return; }
+
+        const pricingUnits = Array.from(document.querySelectorAll('#pricing-units-container .pricing-unit-card')).map(card => {
+             const priceTiers = Array.from(card.querySelectorAll('.price-tier-row')).map(row => ({
+                quantity: parseInt(row.querySelector('input[data-field="tier-qty"]').value, 10),
+                price: parseFloat(row.querySelector('input[data-field="tier-price"]').value)
+            })).filter(t => !isNaN(t.quantity) && t.quantity > 0 && !isNaN(t.price));
+            
+            const defaultPrice = priceTiers.find(t => t.quantity === 1)?.price || priceTiers[0]?.price || 0;
+            return {
+                unitName: card.querySelector('input[data-field="unitName"]').value.trim(),
+                barcode: card.querySelector('input[data-field="barcode"]').value.trim(),
+                cost: parseFloat(card.querySelector('input[data-field="cost"]').value) || 0,
+                conversionFactor: parseInt(card.querySelector('input[data-field="conversionFactor"]').value, 10) || 1,
+                defaultPrice, priceTiers
+            };
+        });
+
+        const productData = {
+            productCode, productName,
+            category: document.getElementById('product-category').value.trim(),
+            baseUnit: document.getElementById('product-base-unit').value.trim(),
+            stockInBaseUnits: parseInt(document.getElementById('product-stock').value, 10) || 0,
+            pricingUnits, updatedAt: new Date().toISOString()
+        };
+
+        try {
+            const { api, db } = window.firebaseServices;
+            if (this.state.currentEditingProductId) {
+                const docRef = api.doc(db, this.getProductsCollectionRef().path, this.state.currentEditingProductId);
+                await api.setDoc(docRef, productData, { merge: true });
+            } else {
+                productData.createdAt = new Date().toISOString();
+                await api.addDoc(this.getProductsCollectionRef(), productData);
+            }
+            this.showInfoModal("สำเร็จ", "บันทึกข้อมูลสินค้าเรียบร้อยแล้ว");
+            this.hideProductEditorModal();
+        } catch (error) {
+            this.showInfoModal("ผิดพลาด", `เกิดข้อผิดพลาด: ${error.message}`, true);
+        }
+    },
     handleAddPricingUnit() { this.addPricingUnitRow(); },
-    handlePricingUnitActions(e) { /* ... same as before ... */ },
-    importFromGoogleSheet() { /* ... same as before ... */ },
-    startAutoImportPolling() { /* ... same as before ... */ },
-    stopAutoImportPolling() { /* ... same as before ... */ },
-    _hashText(text) { /* ... same as before ... */ },
-    exportToExcel() { /* ... same as before ... */ },
-    executeClearAllHistory() { /* ... same as before ... */ },
+    handlePricingUnitActions(e) { 
+        const button = e.target.closest('button');
+        if (!button) return;
+        if(button.dataset.action === 'remove-unit') button.closest('.pricing-unit-card').remove();
+        if(button.dataset.action === 'add-tier') button.previousElementSibling.insertAdjacentHTML('beforeend', this.createPriceTierRowHTML(1, 0));
+        if(button.dataset.action === 'remove-tier') button.closest('.price-tier-row').remove();
+    },
+    async importFromGoogleSheet(isAutomatic = false) {
+        if (!isAutomatic && !confirm('ต้องการนำเข้าข้อมูลจาก Google Sheet หรือไม่?')) return;
+        this.showInfoModal("กำลังนำเข้า...", "กำลังดาวน์โหลดข้อมูล...");
+        Papa.parse(this.config.googleSheetUrl, {
+            download: true, header: true, skipEmptyLines: true,
+            complete: async (results) => {
+                try {
+                    const { db, api } = window.firebaseServices;
+                    const productsRef = this.getProductsCollectionRef();
+                    const snapshot = await api.getDocs(productsRef);
+                    const existingProducts = new Map(snapshot.docs.map(doc => [doc.data().productCode, { id: doc.id, data: doc.data() }]));
+                    
+                    const batch = api.writeBatch(db);
+                    let updated = 0, added = 0;
+                    for (const row of results.data) {
+                        const code = String(row['รหัสสินค้า'] || '').trim();
+                        if (!code) continue;
+                        
+                        const existing = existingProducts.get(code);
+                        if (existing) { // Update
+                            const docRef = api.doc(db, productsRef.path, existing.id);
+                            batch.update(docRef, { stockInBaseUnits: parseInt(row['คงเหลือ'], 10) || existing.data.stockInBaseUnits });
+                            updated++;
+                        } else { // Add new
+                             const newDocRef = api.doc(productsRef);
+                             const price = parseFloat(row['ราคา']) || 0;
+                             batch.set(newDocRef, {
+                                productCode: code, productName: String(row['ชื่อการค้า']).trim(),
+                                baseUnit: String(row['หน่วย']).trim() || 'หน่วย', stockInBaseUnits: parseInt(row['คงเหลือ'], 10) || 0,
+                                pricingUnits: [{ unitName: String(row['หน่วย']).trim() || 'หน่วย', barcode: String(row['บาร์โค้ด']).trim(), cost: parseFloat(row['ต้นทุน']) || 0, conversionFactor: 1, defaultPrice: price, priceTiers: [{quantity: 1, price}] }],
+                                createdAt: new Date().toISOString()
+                             });
+                             added++;
+                        }
+                    }
+                    await batch.commit();
+                    this.showInfoModal("สำเร็จ", `นำเข้าข้อมูลเรียบร้อย\nอัปเดต ${updated} รายการ, เพิ่มใหม่ ${added} รายการ`);
+                } catch(e) { this.showInfoModal("ผิดพลาด", `เกิดข้อผิดพลาด: ${e.message}`, true); }
+            },
+            error: (err) => this.showInfoModal("ผิดพลาด", `ไม่สามารถโหลดข้อมูลได้: ${err.message}`, true)
+        });
+    },
+    startAutoImportPolling() { 
+        if (this.state.autoImportInterval) clearInterval(this.state.autoImportInterval);
+        this.state.autoImportInterval = setInterval(() => this.importFromGoogleSheet(true), 5 * 60 * 1000);
+    },
+    stopAutoImportPolling() { 
+        if (this.state.autoImportInterval) clearInterval(this.state.autoImportInterval);
+    },
+    async executeClearAllHistory() { 
+        const salesCollection = this.getSalesHistoryCollectionRef();
+        try {
+            const snapshot = await window.firebaseServices.api.getDocs(salesCollection);
+            const batch = window.firebaseServices.api.writeBatch(window.firebaseServices.db);
+            snapshot.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+            this.showInfoModal("สำเร็จ", "ล้างประวัติทั้งหมดเรียบร้อยแล้ว");
+        } catch(e) { this.showInfoModal("ผิดพลาด", `ไม่สามารถล้างประวัติได้: ${e.message}`, true); }
+    },
+     exportToExcel() {
+        const dataToExport = this.state.salesHistory.flatMap(sale =>
+            sale.items.map(item => ({
+                'รหัสการขาย': sale.id, 'วันที่': new Date(sale.timestamp).toLocaleDateString('th-TH'), 'เวลา': new Date(sale.timestamp).toLocaleTimeString('th-TH'),
+                'ยอดรวมก่อนลด': sale.subtotal?.toFixed(2), 'ส่วนลด': sale.discount?.toFixed(2), 'ยอดสุทธิ': sale.total?.toFixed(2),
+                'สินค้า': item.name, 'จำนวน': item.quantity, 'มูลค่ารวม': (item.price * item.quantity).toFixed(2)
+            }))
+        );
+        if (dataToExport.length === 0) { this.showInfoModal("ไม่มีข้อมูล", "ไม่มีข้อมูลให้ Export", false); return; }
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'ประวัติการขาย');
+        XLSX.writeFile(workbook, `pos-history-${new Date().toISOString().split('T')[0]}.xlsx`);
+    },
 };
 
 document.addEventListener('DOMContentLoaded', () => {
